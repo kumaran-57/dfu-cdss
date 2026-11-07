@@ -1,0 +1,25 @@
+experiment_id: E1
+title: Self-Supervised Visual Representation Comparison
+models:
+  - name: imagenet_baseline
+    type: resnet50_supervised
+    embedding_dim: 2048
+  - name: dinov2_vits14
+    type: vision_transformer
+    embedding_dim: 384
+  - name: simclr_resnet50
+    type: contrastive
+    embedding_dim: 2048
+  - name: mae_vit_base
+    type: masked_autoencoder
+    embedding_dim: 768
+evaluation:
+  protocol: linear_probing
+  metrics:
+    - macro_f1
+    - roc_auc
+    - pr_auc
+partitioning:
+  split_strategy: patient_level
+  random_seeds: [42, 123, 999]
+device: cpu

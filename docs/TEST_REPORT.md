@@ -2,13 +2,14 @@
 
 **Date of Execution:** 2026-11-07  
 **Test Framework:** Pytest 9.1.1 (Python 3.14.8 on Linux 7.1.5+kali-amd64 x86_64)  
-**Execution Command:** `pytest backend/tests -v` / `./scripts/run_tests.sh`  
-**Overall Status:** **19 PASSED, 0 FAILED (100% Pass Rate)**
+**Execution Command:** `pytest backend/tests ml/tests -v` / `./scripts/run_tests.sh`  
+**Overall Status:** **30 PASSED, 0 FAILED (100% Pass Rate)**
 
 ---
 
 ## Detailed Test Case Ledger
 
+### Backend Services & Security
 | Test Suite / File | Test Case Name | Result | Verification Scope |
 | :--- | :--- | :---: | :--- |
 | `test_health.py` | `test_root_endpoint` | **PASSED** | Service online status and clinical disclaimer display. |
@@ -31,8 +32,30 @@
 | `test_audit.py` | `test_non_admin_cannot_view_audit_logs` | **PASSED** | Clinicians prevented from audit inspection (HTTP 403). |
 | `test_end_to_end_pipeline.py` | `test_full_clinical_pipeline_vertical_slice` | **PASSED** | Full workflow: Login -> Participant -> Visit -> Image Upload -> Blur Check -> Calibrate -> Segment -> Clinician Review -> Longitudinal Trajectory -> CSV Export. |
 
+### Machine Learning & Scientific Evaluation
+| Test Suite / File | Test Case Name | Result | Verification Scope |
+| :--- | :--- | :---: | :--- |
+| `test_metrics.py` | `test_dice_and_iou_exact_match` | **PASSED** | Identical binary masks evaluate to DSC = 1.0, IoU = 1.0. |
+| `test_metrics.py` | `test_dice_and_iou_disjoint` | **PASSED** | Disjoint masks evaluate to DSC = 0.0, IoU = 0.0. |
+| `test_metrics.py` | `test_dice_half_overlap` | **PASSED** | Mathematical accuracy on 50% overlapping regions. |
+| `test_metrics.py` | `test_hd95_metric` | **PASSED** | 95th percentile Hausdorff Distance boundary comparison. |
+| `test_metrics.py` | `test_brier_and_ece` | **PASSED** | Brier score and Expected Calibration Error for probability reliability. |
+| `test_models.py` | `test_unet_inference_shape_and_metadata` | **PASSED** | U-Net baseline forward pass and tissue partition fractions. |
+| `test_models.py` | `test_segformer_inference_shape_and_metadata`| **PASSED** | SegFormer-B0 forward pass and epistemic uncertainty score. |
+| `test_manifest_leakage.py` | `test_valid_manifest_zero_leakage` | **PASSED** | Manifest validator confirms 100% patient partition isolation. |
+| `test_manifest_leakage.py` | `test_patient_leakage_detection` | **PASSED** | Correctly catches and raises error on cross-split patient overlap. |
+| `test_fusion_and_ssl.py` | `test_multimodal_fusion_ablation` | **PASSED** | Controlled 3-way ablation (Image-only vs Clinical-only vs Fused). |
+| `test_fusion_and_ssl.py` | `test_ssl_encoder_feature_extraction_and_probing` | **PASSED** | Latent feature extraction and downstream linear probe classification. |
+
 ---
 
-## Known Gaps & Next Steps
-- **Milestone 2 (Frontend Foundation)**: Develop Next.js 14 App Router UI connected to this verified backend API.
-- **Milestone 4 & 5 (Segmentation & SSL Comparison)**: Trainable PyTorch SegFormer / U-Net modules and SSL evaluation harnesses.
+## Frontend Build Status
+- **Next.js 14 Production Build**: **COMPILED & VERIFIED (Code 0)**
+- **Routes Generated**:
+  - `/` (Dashboard Overview)
+  - `/login` (Role-based Authentication)
+  - `/participants` (Participant Registry & Coded ID Search)
+  - `/participants/[id]` (Longitudinal Timeline & Area Reduction Trajectory)
+  - `/visits/[id]/capture` (Capture, Blur Check & Geometric Calibration)
+  - `/visits/[id]/assessment` (AI Segmentation Overlay & Clinician Adjudication)
+  - `/research` (Experiment Matrices E1–E10 & De-identified CSV Export)

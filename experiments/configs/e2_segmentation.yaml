@@ -1,0 +1,23 @@
+experiment_id: E2
+title: Wound Boundary and Tissue Sub-Segmentation
+candidates:
+  - name: unet_baseline
+    backbone: resnet34
+    input_resolution: [512, 512]
+  - name: segformer_b0
+    backbone: mit_b0
+    input_resolution: [512, 512]
+classes:
+  binary:
+    - background
+    - wound
+  multiclass:
+    - background
+    - granulation
+    - slough
+    - necrotic
+metrics:
+  - dice_similarity_coefficient
+  - intersection_over_union
+  - hd95_mm
+device: cpu

@@ -1,0 +1,29 @@
+experiment_id: E7
+title: Multimodal Clinical Feature Fusion
+ablation_arms:
+  - image_only
+  - clinical_only
+  - fused_multimodal
+clinical_features:
+  - age_at_enrollment
+  - biological_sex
+  - hba1c_percentage
+  - neuropathy_present
+  - abi_index
+  - infection_status
+  - offloading_modality
+image_features:
+  - calibrated_area_cm2
+  - major_length_mm
+  - minor_width_mm
+  - granulation_percentage
+  - slough_percentage
+  - necrotic_percentage
+classifiers:
+  - logistic_regression
+  - gradient_boosting
+metrics:
+  - roc_auc
+  - brier_score
+  - macro_f1
+missing_value_strategy: median_imputation_training_only
