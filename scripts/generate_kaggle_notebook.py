@@ -61,8 +61,33 @@ else:
     print("WARNING: Running on CPU. In Kaggle, click 'Settings' -> 'Accelerator' -> 'GPU T4 x2' to enable GPU.")
 """)
 
+    # Cell 2b: Clone GitHub Repository
+    add_code("""# 2. Clone GitHub Repository & Load DFU-XAI Modules
+# This downloads your project codebase directly into the Kaggle environment so you can use your custom loaders and models.
+import os
+import sys
+
+REPO_URL = "https://github.com/kumaran-57/dfu-cdss.git"
+CLONE_DIR = "/kaggle/working/dfu-cdss"
+
+if not os.path.exists(CLONE_DIR):
+    # Note: If your repository is PRIVATE, add a GitHub Personal Access Token (PAT):
+    # !git clone https://<YOUR_GITHUB_TOKEN>@github.com/kumaran-57/dfu-cdss.git {CLONE_DIR}
+    !git clone {REPO_URL} {CLONE_DIR}
+
+if CLONE_DIR not in sys.path:
+    sys.path.append(CLONE_DIR)
+
+try:
+    from ml.data.loaders.fuseg import FUSegAdapter
+    from ml.evaluation.metrics import compute_dice_score, compute_iou
+    print("✓ Successfully cloned dfu-cdss and imported DFU-XAI modules!")
+except ImportError as e:
+    print(f"Module import notice: {e}")
+""")
+
     # Cell 3: Install dependencies
-    add_code("""# 2. Install Required Medical & Vision Packages
+    add_code("""# 3. Install Required Medical & Vision Packages
 !pip install -q transformers evaluate albumentations timm opencv-python-headless
 print("✓ Packages installed successfully.")
 """)
